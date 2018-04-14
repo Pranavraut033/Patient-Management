@@ -1,0 +1,2 @@
+1) form_sys can have multiple disease
+2) Case -> FollowUp -> Complaint
