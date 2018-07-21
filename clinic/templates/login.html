@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load static %}
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="Pranav Raut">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--Import Google Icon Font-->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<!--Import materialize.css-->
+		<link type="text/css" rel="stylesheet" href="{% static 'clinic/css/materialize.min.css' %}"  media="screen,projection"/>
+		<link type="text/css" rel="stylesheet" href="{% static 'clinic/css/login-style.css' %}"/>
+		<script>
+            function nospaces(t) {
+                if(t.value.match(/\s/g))
+                    t.value=t.value.replace(/\s/g,'');
+            }
+        </script>
+		<title>Doctor's Login | Clinic</title>
+	</head>
+	<body>
+		<div class="login-outer">
+	    	<div class="container login-middle">
+	    		<div class="row">
+		    		<div class="col s12 m6 l4 offset-m3 offset-l1">
+		    			<div class="card-panel blue lighten-2" >
+		    				<div class="card-content white-text">
+			    				<span class="card-title yellow-text text-accent-3"><h4 style="margin-top: 0px" c>Clinic <small class="grey-text text-lighten-2">login</small></h4></span>
+			    				<div style="width: 80%; margin: 0 auto;" >
+			    					<form method="post" class="row">
+				                        {% csrf_token %}
+				                        <div class="col input-field s12">
+				                        	<i class="material-icons prefix">face</i>
+				                            <input type="text" name="username" required id="id_username" onkeyup="nospaces(this)" class="validate" data-length="20"/>
+				                            <label for="id_username">Username</label>  
+				                            {% if u_error %}
+				                        		<span class="helper-text" data-success="">{{ u_error }}</span>
+				                            {% endif %}
+				                        </div>
+				                        <div class="col input-field s12">
+				                        	<i class="material-icons prefix">vpn_key</i>
+				                            <input type="password" name="password" required id="id_password" class="validate" data-length="16"/>
+				                        	<label for="id_password">Password</label>
+											{% if p_error %}
+				                        		<span class="helper-text" data-success="">{{ p_error }}</span>
+				                            {% endif %}
+				                        </div>
+			                        	<div class="card-action right-align s12">
+			                        		<a href="doctor/new" class="waves-effect waves-light grey-text text-lighten-3 btn-flat">New Doctor?&ensp;</a>
+			                            	<button type="submit" class="waves-effect waves-light btn red lighten-1" >Login</button>
+			                        	</div>
+			                    	</form>
+				                </div>
+			                </div>
+		    			</div>
+		        	</div>
+		        </div>
+	    	</div>
+	    	<script type="text/javascript" src="{% static '/js/materialize.min.js' %}"></script>
+	    </div>
+    </body>
+</html>

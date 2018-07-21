@@ -2,20 +2,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from .forms import *
 from .models import *
-from .utils import log
+from .utils import log, utilities
 from django.core.exceptions import ObjectDoesNotExist
-
+from datetime import date
 site_url = '/'
 
-# Create your views here.
-def index(request):
+def index(request): 
+    context = dict()
+    pg = ''
     try:
         d =  Doctor.objects.get(pk=request.session['current_user'])
         context = {'doctor': d}
-        # todo continue here
-        return render(request, 'clinic/index.html', context)
+        # TODO: Index Page
+        pg = 'index.html'
     except (ObjectDoesNotExist, KeyError) as ex:
-        err_msg = None
+        # Login Page
+        p_msg, u_msg = None, None
         if isinstance(ex, ObjectDoesNotExist):
             del request.session['current_user']
             err_msg = 'Doctor Deleted!'
@@ -24,18 +26,19 @@ def index(request):
             if form.is_valid():
                 d = Doctor.objects.filter(username=form['username'].value())
                 if len(d) == 0:
-                    err_msg = 'Username not found'
+                    u_msg = 'Username not found'
                 else:
                     d = d[0]
                     if d.verify_password(form['password'].value()):
                         request.session['current_user'] = d.username
                         return redirect(site_url + 'clinic/')
                     else:
-                        err_msg = 'Invalid password'
+                        p_msg = 'Invalid password'
         else:
             form = LoginForm()
-        context = {'login_form' : form, 'error_message' : err_msg}
-        return render(request, 'clinic/login.html', context)
+        context = {'login_form' : form, 'p_error' : p_msg, 'u_error' : u_msg}
+        pg = 'login.html'
+    return render(request, '%s' % (pg), context)
 
 def logout(request):
     try:
@@ -80,5 +83,7 @@ def new_human(request, obj):
                 return redirect(prv)
     else:
         form = form_class()
-    return render(request, 'clinic/template_new.html', {'form' : form, 'next' : '/%s/new' % (obj), \
-            'previous' : prv, 'obj' : str(form), 'error_message' : err_msg, })
+    
+    d = utilities.get_adv_date(0, -18).__format__('20%y-%m-%d')
+    return render(request, 'new-' + str(obj) +'.html', {'form' : form, 'next' : '/%s/new' % (obj), \
+            'previous' : prv, 'obj' : eval(str(form)), 'error_message' : err_msg, 'time_18' : d})

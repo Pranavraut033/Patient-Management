@@ -1,6 +1,9 @@
 from django.contrib import admin
 from .models import *
 
+pr_info = ('Personal information', {'fields': ['profile', 'first_name', 'middle_name','last_name', \
+                                               'gender', 'dob','bld_grp', 'phone_number', 'email', \
+                                               's_address', 'city', 'state', 'country', 'pincode']})
 
 class CasesInLine(admin.TabularInline):
     model = Case
@@ -12,48 +15,30 @@ class AppointmentCasesInLine(admin.TabularInline):
     extra = 1
 
 
-class ComplaintInLine(admin.TabularInline):
-    model = Complaint
-    extra = 5
-
-
 class DoctorAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Login information', {'fields': ['username', 'password']}),
-        ('Personal information', {'fields': ['profile', 'full_name', 'gender', 'dob']}),
-        ('Extra information', {'fields': ['phone_number', 'email', 'degree', 'address']}),
+        ('Login information', {'fields': ['username', 'password', 'qual', 'bio', 'speciality']}),
+        pr_info,
     ]
     inlines = [AppointmentCasesInLine]
-    list_display = ('full_name', 'phone_number', 'email', 'degree', )
+    list_display = ('name', 'phone_number', 'email', 'speciality', )
 
 
 class PatientAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Personal information', {'fields': ['profile','full_name', 'gender', 'dob']}),
-        ('Emergency information', {'fields': ['relative', 'emergency_contact']}),
-        ('Extra information', {'fields': ['phone_number', 'email', 'address']}),
+        pr_info,
+        ('Emergency information', {'fields': ['er_cont_name', 'relation', 'emergency_contact']}),
     ]
     inlines = [CasesInLine]
-    list_display = ('full_name', 'phone_number', 'email',)
+    list_display = ('name', 'phone_number', 'email',)
 
 
 class CaseAdmin(admin.ModelAdmin):
-    list_display = ('patient', '__str__', 's_date', 'e_date', 'is_closed',)
+    list_display = ('patient', '__str__', 'reg_time', 'l_visit', 'is_closed',)
 
-
-class FollowUpAdmin(admin.ModelAdmin):
-    # fieldsets = [
-    #     ('Personal information', {'fields': ['profile','full_name', 'gender', 'dob']}),
-    #     ('Emergency information', {'fields': ['relative', 'emergency_contact']}),
-    #     ('Extra information', {'fields': ['phone_number', 'email', 'address']}),
-    # ]
-    inlines = [ComplaintInLine]
-    list_display = ('get_patient', 'case', "time", 'is_settled', )
 
 admin.site.register(Disease)
 admin.site.register(Appointment)
-admin.site.register(FromSys)
 admin.site.register(Case, CaseAdmin)
 admin.site.register(Doctor, DoctorAdmin)
 admin.site.register(Patient, PatientAdmin)
-admin.site.register(FollowUp, FollowUpAdmin)
