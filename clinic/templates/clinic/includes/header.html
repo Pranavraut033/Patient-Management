@@ -1,0 +1,43 @@
+{% load static %}
+{% load utilities %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" >
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<a class="navbar-brand mb-0 h1" href="{% url 'clinic:index' %}">Clinic</a>
+	<div class="collapse navbar-collapse" id="navbar">
+		<form class="form-inline mr-auto ml-auto my-2 my-lg-0" method="put" action="search">
+			<div id="search-form" class="input-group">
+				<input id="search-bar" class="form-control" type="search" name="q" placeholder="Search here..." >
+				<div class="input-group-append">
+					<button class="btn btn-outline-secondary mr-2 mr-sm-0" type="submit">Search</button>
+					<button class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span class="sr-only">Toggle Dropdown</span>
+					</button>
+					<div class="dropdown-menu p-4">
+                        foobar is car bus myself at the church tonight is right left me toward the cliff
+                        <br>thol whole hello sit her for go
+                        <br>
+					</div>
+				</div>
+			</div>
+		</form>
+		<ul class="navbar-nav mt-2 mt-lg-0">
+			<li class="nav-item">
+				<a class="nav-link" href="#profile">
+					<div id="profile-block">
+						<img class="rounded-circle float-left"src="{% static doctor.get_profile_url %}" alt="Profile Icon">
+						{% sub doctor.name 16%}
+						<!-- TODO: add menu -->
+					</div>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{% url 'clinic:logout' %}" class="nav-link">Logout</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#help">Help</a>
+			</li>
+		</ul>
+	</div>
+</nav>

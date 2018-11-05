@@ -13,7 +13,7 @@ def create_patient():
             phone_number=1234567890, address='abc')
 
 def create_case(d, p, days):
-    return Case.objects.create(disease=Disease.objects.create(name="fever", abrv="fvr"), patient=p, \
+    return Case.objects.create(disease=Disease.objects.create(name='fever', abrv='fvr'), patient=p, \
             doctor=d, s_date=timezone.now() - datetime.timedelta(days=days))
 
 
@@ -34,7 +34,7 @@ class DoctorModelsTest(TestCase):
 
 def get_all():
     p = create_patient()
-    d = create_doctor("pranav", "passsword")
+    d = create_doctor('pranav', 'passsword')
     return d, p, create_case(p=p, d=d, days=-2)
 
 

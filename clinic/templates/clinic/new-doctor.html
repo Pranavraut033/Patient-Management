@@ -1,0 +1,66 @@
+{% extends "clinic/base_extra.html" %}
+{% load view-helper %}
+{% block title %}Add Doctor| Clinic{% endblock %}
+{% block head %}
+	<script type="text/javascript">
+	function limitLength(t, limit) {
+		if (t.value.length > limit)
+			t.value = t.value.slice(0, limit);
+	}
+</script>
+	{% endblock %}
+	{% block content %}
+	<div class="container py-4">
+		<div class="row">
+			<div class="col-12 col-lg-7 mx-auto">
+				<div class="card border-primary">
+					<div class="card-header">
+						<h3 class="card-title m-0">New <small class="text-muted">Doctor</small></h3>
+					</div>
+					<div class="card-body">
+						<form method="post" id="doctor_form" action="{% url 'clinic:add' 'doctor'%}" enctype="multipart/form-data">
+							{% csrf_token %}
+							<fieldset>
+								<legend class="text-primary">Login information</legend>
+								<div class="form-row"> {% file object 'profile' label="Profile image" accept='image/*' icon='face' extra=extra %}
+									{% input object 'username' icon='face' extra=extra %}
+									{% input object 'password' 'col-md-6' 'password' icon='vpn_key' extra=extra %}
+									{% input object 'password' 'col-md-6' 'password' id="confirm_pass" icon='vpn_key' label="Confirm Password" required=true extra=extra %} </div>
+							</fieldset>
+							<fieldset>
+								<legend class="text-primary">Personal information</legend>
+								<div class="form-row"> {% input object 'first_name' 'col-md-4' extra=extra %}
+									{% input object 'middle_name' 'col-md-4' extra=extra %}
+									{% input object 'last_name' 'col-md-4' extra=extra %}
+
+									{% input object 'phone_number' 'col-md-5' 'tel' options='onkeypress="limitLength(this, 10)"' extra=extra %}
+									{% input object 'email' 'col-md-7' 'email' extra=extra %}
+
+									{% input object 'qual' 'col-md-5' 'text' icon='work' i_opts='prefix' extra=extra options="maxlength='20' onkeyup='limitLength(this, 20)'" %}
+									{% select object 'speciality' 'col-md-7' icon='star' i_opts='prefix' extra=extra %} </div>
+							</fieldset>
+							<fieldset>
+								<legend class="text-primary">Extra information</legend>
+								<div class="form-row"> {% select object 'gender' 'col-md-3' extra=extra %}
+									{% select object 'blood_type' 'col-md-3' extra=extra %}
+									{% input object 'dob' 'col-md-6' 'date' extra=extra %}
+
+									{% input address 's_address' 'col-sm-12 col-md-9' extra=extra %}
+									{% input address 'pincode' 'col-sm-3' 'tel' extra=extra %}
+									{% input address 'city' 'col-sm-5 col-md-3' extra=extra %}
+									{% select address 'state' 'col-sm-4' extra=extra %}
+									{% select address 'country' 'col-md-5' extra=extra %}
+
+									{% textarea object 'bio' 250 'col-md-12' icon='info' i_opts='prefix' extra=extra %} </div>
+							</fieldset>
+							<input type="reset" name="reset" value="Clear" class="card-link btn btn-light">
+							<div class="float-right"> <a class="card-link" onclick="javascript:history.go(-1)">Cancel</a>
+								<button type="submit" class="card-link btn btn-primary" value="{{ next }}">Create</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

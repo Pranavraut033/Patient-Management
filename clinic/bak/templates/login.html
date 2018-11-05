@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %} Login | Clinic {% endblock %}
+{% block head %}
+	<link type="text/css" rel="stylesheet" href="{% static '/css/input-style-dark.css' %}">
+	<link type="text/css" rel="stylesheet" href="{% static '/css/input-accent.css' %}">
+	<style type="text/css">
+		body {
+			background-image: url("../static/img/med_bg.jpg");
+			background-attachment: fixed;
+			background-repeat: no-repeat;
+			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;
+		}
+		.login-outer {
+			display: table;
+			position: absolute;
+			height: 100%;
+			width: 100%;
+		}
+		.login-middle {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.login-form {
+			width: 90%; margin: 0 auto;
+		}
+		@media screen and (min-width: 601px) {
+			.login-form {
+				width: 80%;
+			}
+		}
+	</style>
+	<script>
+		function nospaces(t) {
+		          if(t.value.match(/\s/g))
+		              t.value=t.value.replace(/\s/g,'');
+		       }
+	</script>
+{% endblock %}
+{% block body %}
+	<div class="login-outer">
+		<div class="container login-middle">
+			<div class="row">
+				<div class="col s12 m6 l4 offset-m3 offset-l1">
+					<div class="card-panel blue lighten-2">
+						<div class="card-content white-text">	
+							<div class="card-title yellow-text text-accent-3">
+								<h4 style="margin-top: 0px">Clinic <small class="grey-text text-lighten-2">login</small></h4>
+							</div>
+							<div class="login-form">
+								<form method="post" class="row">
+									{% csrf_token %}
+									<div class="col input-field s12">	<i class="material-icons prefix">face</i>
+										<input type="text" name="username" required id="id_username" onkeyup="nospaces(this)" class="validate" data-length="20" />
+										<label for="id_username">Username</label>{% if u_error %}	<span class="helper-text" data-success="">{{ u_error }}</span>
+										{% endif %}</div>
+									<div class="col input-field s12">	<i class="material-icons prefix">vpn_key</i>
+										<input type="password" name="password" required id="id_password" class="validate" data-length="16" />
+										<label for="id_password">Password</label>{% if p_error %}	<span class="helper-text" data-success="">{{ p_error }}</span>
+										{% endif %}</div>
+									<div class="card-action right-align s12">	<a href="doctor/new" class="waves-effect waves-light grey-text text-lighten-3 btn-flat">New Doctor?&ensp;</a>
+										<button type="submit" class="waves-effect waves-light btn red lighten-1">Login</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

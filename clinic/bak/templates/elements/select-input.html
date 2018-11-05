@@ -1,0 +1,15 @@
+{% extends 'elements/base-input.html'%}
+{% block content %}
+<select name="{{ fld.attname }}" id="id_{{ fld.attname }}" {% if required %} required {% endif%}>
+    {% if default is None %}
+        <option value="" selected disabled>---------</option>
+        {% for val in vals %}
+            <option value="{{ val.0 }}">{{ val.1 }}</option>
+        {% endfor %}
+    {% else %}
+        {% for val in vals %}
+            <option value="{{ val.0 }}" {% if val.0 == fld.default %} selected {% endif %}>{{ val.1 }}</option>
+        {% endfor %}
+    {% endif %}
+</select>
+{% endblock %}

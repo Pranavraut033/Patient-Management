@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="Pranav Raut">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--Import Google Icon Font-->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<!--Import materialize.css-->
+		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+		<title>Clinic Login</title>
+
+	</head>
+
+	<body>
+
+	<!--JavaScript at end of body for optimized loading-->
+		<script type="text/javascript" src="js/materialize.min.js"></script>
+	</body>
+</html>
+
+<html>
+    <head>
+    	
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+ 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+        <link rel="stylesheet" type="text/css" href="/static/clinic/style/styles.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		
+    </head>
+    <body>
+    	{% if error_message %}
+    		<div class="navbar-fixed-top col-md-6 col-md-offset-3">
+				<div class="alert alert-danger" role="alert" style="margin: 1em;">
+					<span class="glyphicon glyphicon-alert"></span> <b>{{ error_message }}</b>
+				</div>
+			</div>
+			{% endif %}
+    	<div class="container" >
+    		<div class="row">
+	    		<div class="col-xs-12 col-md-6 col-md-offset-3" style="padding-top: 150px">
+	    			<div class="jumbotron panel panel-primary card ">
+	    				<h3 style="margin-top:10px;">Clinic <small>login</small></h3>
+	    				<div class="panel-body">
+	    					<form method="post">
+		                        {% csrf_token %}
+		                        <div class="form-group">
+		                        	<label for="id_username" >Username</label>
+		                            <input class="form-control" type="text" placeholder="Username" name="username" required id="id_username" onkeyup="nospaces(this)" />
+		                        </div>
+
+		                        <div class="form-group">
+		                        	<label for="id_password">Password</label>
+		                            <input class="form-control" type="password" placeholder="Password" name="password" required id="id_password" />
+		                        </div>
+
+		                        <div class="text-right sumbit-row">
+		                            <button type="submit" class="btn btn-primary" >Login</button>
+		                        </div>
+	                    	</form>
+		                    <div style="padding-top:10px" class="text-right">
+		                        <a href="doctor/new"><small>New Doctor</small></a>
+		                    </div>
+		                </div>
+	    			</div>
+	        	</div>
+	        </div>
+    	</div>
+    </body>
+</html>

@@ -1,0 +1,49 @@
+.input-field label {
+	color: #dddddd;
+}
+
+.input-field input[type=text]:not(.browser-default).invalid {
+	border-bottom: 1px solid #F1F1F1;
+	box-shadow: 0 1px 0 0 #F1F1F1;
+}
+.input-field input[type=text]:not(.browser-default).valid {
+	border-bottom: 1px solid #EEEEEE;
+	box-shadow: 0 1px 0 0 #EEEEEE;
+}
+.input-field input[type=text]:not(.browser-default):focus {
+	border-bottom: 1px solid #ff5252;
+	box-shadow: 0 1px 0 0 #ff5252;
+}
+.input-field input[type=text]:not(.browser-default):focus ~ label {
+	color: #ff5252;
+}
+
+input[type=password]:not(.browser-default) {
+	border-bottom: 1px solid #F1F1F1;
+	box-shadow: 0 1px 0 0 #F1F1F1;
+}
+
+input[type=password]:not(.browser-default) {
+	border-bottom: 1px solid #F1F1F1;
+	box-shadow: 0 1px 0 0 #F1F1F1;
+}
+
+.input-field input[type=password]:not(.browser-default).invalid {
+	border-bottom: 1px solid #F1F1F1;
+	box-shadow: 0 1px 0 0 #F1F1F1;
+}
+.input-field input[type=password]:not(.browser-default).valid {
+	border-bottom: 1px solid #EEEEEE;
+	box-shadow: 0 1px 0 0 #EEEEEE;
+}
+.input-field input[type=password]:not(.browser-default):focus {
+	border-bottom: 1px solid #ff5252;
+	box-shadow: 0 1px 0 0 #ff5252;
+}
+.input-field input[type=password]:not(.browser-default):focus ~ label {
+	color: #ff5252;
+}
+
+.btn, .btn-flat{
+	text-transform: capitalize;
+}

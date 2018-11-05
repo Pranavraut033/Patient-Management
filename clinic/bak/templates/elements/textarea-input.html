@@ -1,0 +1,8 @@
+{% extends 'elements/base-input.html'%}
+{% block content %}
+<textarea class="counter materialize-textarea" name="{{ fld.attname }}" id="id_{{ fld.attname }}"
+        {% if default is None %} value="{{ default }}" {% endif %}
+        {% if required %} required {% endif%} maxlength="{{ fld.max_length }}"
+        data-length='{{ fld.max_length }}'
+        {{ options }} ></textarea>
+{% endblock %}

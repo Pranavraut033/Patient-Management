@@ -1,0 +1,62 @@
+{% extends "new-base.html" %}
+{% load etc %}
+{% block head %}
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function() {
+	    var elems = document.querySelectorAll('.counter');
+	    var instances = M.CharacterCounter.init(elems);
+	});
+	function limitLength(t, limit) {
+		if (t.value.length > limit)
+			t.value = t.value.slice(0, limit);
+
+	}
+</script>
+{% endblock %}
+{% block content %}
+<h2>New <small>{{ obj_s }}</small></h2>
+<div class="col s12 m10 l8 offset-m1">
+	<div class="card">
+		<div class="card-content">
+			<form enctype="multipart/form-data" method="post" id="doctor_form" class="row">
+				{% csrf_token %}
+				<fieldset class="row pad-b0">
+					<div class="col s12">
+						<strong class="red-text">General information</strong>
+					</div>
+					{% text obj 'username' 'col s6' icon='face' i_opts='prefix'%}
+					{% text obj 'password' 'col s6' 'password' icon='vpn_key' i_opts='prefix' max_length='20' %}
+					{% text obj 'qual' 'col s5' 'text' icon='work' i_opts='prefix' options='maxlength=\'20\''%}
+					{% select obj 'speciality' 'col s7' icon='star' i_opts='prefix' %}
+					{% textarea obj 'bio' 250 'col s12' icon='info' i_opts='prefix' %}
+				</fieldset>
+				<fieldset class="row pad-b0 ">
+					<div class="col s12">
+						<strong class="red-text">Personal information</strong>
+					</div>
+					{% file obj 'profile' 'col s12' 'image/*' %}
+					{% text obj 'first_name' 'col s4'%}
+					{% text obj 'middle_name' 'col s4'%}
+					{% text obj 'last_name' 'col s4' %}
+					{% select obj 'gender' 'col s3'%}
+					{% select obj 'bld_grp' 'col s3'%}
+					{% text obj 'dob' 'col s6' 'date'%}
+					{% text obj 'phone_number' 'col s5' 'number' options='onkeypress="limitLength(this, 10)"'%}
+					{% text obj 'email' 'col s7' 'email'%}
+					{% text obj 's_address' 'col s9'%}
+					{% text obj 'pincode' 'col s3' 'number' %}
+					{% text obj 'city' 'col s3' %}
+					{% select obj 'state' 'col s4'%}
+					{% select obj 'country' 'col s5'%}
+				</fieldset>
+				<div class="card-action ruight">
+					<div class="right">
+						<a class="waves-effect waves-dark btn-flat grey-text text-darken-2" href="{{ previous }}">Cancel</a>
+						<button type="submit" class="waves-effect waves-light btn red" value="{{ next }}">Create</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

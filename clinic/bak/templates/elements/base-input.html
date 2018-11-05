@@ -1,0 +1,7 @@
+<div class="{{ classes }} input-field">
+    {% if icon %}
+    <i class="material-icons {{ i_opts }}">{{ icon }}</i>
+    {% endif %}
+    {% block content %} {% endblock %}
+    <label for="id_{{ fld.attname }}">{{ label }}</label>
+</div>

@@ -1,0 +1,9 @@
+<div class="file-field input-field {{ classes }}">
+    <div class="btn red">
+        <span>{{ label }}</span>
+        <input type="file" name="{{ fld.attname }}" id="id_{{ fld.attname }}" accept="{{ file_type }}" {{ options }} {% if required %} required {% endif%}>
+    </div>
+    <div class="file-path-wrapper">
+        <input class="file-path validate" type="text">
+    </div>
+</div>

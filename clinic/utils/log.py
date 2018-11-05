@@ -1,11 +1,32 @@
-def i(msg):
-    print("I: ", msg)
+class Logger():
+	logging = True
 
-def w(msg, error=None):
-    print("W: ", msg, error)
+	def disableLog(self):
+		print("Disableing Logs")
+		self.logging = False
 
-def d(msg):
-    print("D: ", msg)
+	def enableLog(self, ):
+		print("Enabling Logs")
+		self.logging = True
 
-def e(msg, error):
-    print("E: ", msg, error)
+	def toggleLogging(self):
+		self.logging =  not self.logging
+		print("log: " + str(logging))
+
+	'''
+		Logging Parameters...
+	'''
+	def web(self, *msg):
+		if self.logging: print("---\nWEB: ", *msg)
+
+	def i(self, *msg):
+		if self.logging: print("---\nI: ", *msg)
+
+	def w(self, error=None, *msg):
+		if self.logging: print("---\nW: ", error, *msg)
+
+	def d(self, *msg):
+		if self.logging: print("---\nD: ", *msg)
+
+	def e(self, error, *msg, ):
+		if self.logging: print("---\nE: ", *msg, error)

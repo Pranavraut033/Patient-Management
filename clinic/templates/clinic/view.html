@@ -1,0 +1,20 @@
+{% extends "clinic/base_extra.html" %}
+{% load utilities %}
+{% block title %}
+    {%title obj %}-{%title pk %} | {{doctor}}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% ifequal objects|length 1 %}
+
+            {% else %}
+            <ul>
+                {% for object in objects %}
+                    <li><a href="{% url 'clinic:view' obj object.id %}">{{ object }}</a></li>
+                {% endfor %}
+            </ul>
+            {% endifequal %}
+        </div>
+    </div>
+{% endblock %}

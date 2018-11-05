@@ -1,170 +1,268 @@
-import datetime
 from django.db import models
 from django.utils import timezone
+import datetime
 from passlib.hash import pbkdf2_sha256
-from .utils import utilities as utils
-from .utils.contants import *
+from clinic.utils import utilities as utils
+import clinic.utils.constants as consts
+import clinic.utils.validators as v
 
-specialties = (('ped', 'Pediatrics'), ('cardio','Cardiologist'), ('gyno', 'Gynaecolgist'), ('neuro','Neurologist'), ('onco','Oncologist'), \
-               ('phy', 'Physician'), ('ns', 'Neuro Surgeon'), ('gs', 'General Surgeon'), ('gp', 'General Practitioner'), )
-bld_grps=((0, 'A+'), (1, 'B+'), (2, 'AB+'), (3, 'O+'), (4, 'A-'), (5, 'B-'), (6, 'AB-'), (7, 'O-'))
+# NOTE: ADD ManyToManyField, ForeignKey Field first before adding parent in the database
 
 def get_adv_date():
-    return utils.get_adv_date(7)
+	return utils.get_adv_date(7)
 
-def get_empty(arg):
-    return eval(arg).create_empty()
+# def get_empty(arg):
+#     return eval(arg).create_empty()
 
+class Phone(models.Model):
+	phone_number = models.BigIntegerField(validators=[v.validate_number])
+	type = models.CharField(choices=consts.phone_type, max_length=1, default='h')
 
-class Symptom(models.Model):
-    name = models.CharField(max_length=40)
-    disp = models.CharField(max_length=120, null=True, blank=True)
+	def __str__(self):
+		i = 'Home'
+		for s in consts.phone_type:
+			if s[0] == self.type: i = s[1]; break
+		return str(self.phone_number) + ' (' + i + ')'
 
+class Address(models.Model):
+	s_address = models.CharField('Street Address', max_length=100)
+	city = models.CharField(max_length=40, blank=True)
+	state = models.CharField(choices=consts.states, max_length=2)
+	country = models.CharField(choices=consts.countries, max_length=2)
+	pincode = models.IntegerField(blank=False);
 
-class Medicine(models.Model):
-    name = models.CharField(max_length=40)
-    abbrv = models.CharField(max_length=10, unique=True)
-    disp = models.CharField(max_length=120, null=True,blank=True)
-
+	def __str__(self):
+		return self.s_address + ' (' + str(self.pincode) + ')'
 
 class Disease(models.Model):
-    scientific_name = models.CharField(max_length=40)
-    name = models.CharField(max_length=40)
-    description = models.CharField(max_length=100)
-    symptoms = models.ManyToManyField(Symptom)
-    prescriptions = models.ManyToManyField(Medicine)
+	name = models.CharField(max_length=40, primary_key=True)
+	scientific_name = models.CharField(max_length=40, blank=True);
+	description = models.CharField(max_length=100)
 
+class Drug(models.Model):
+	name = models.CharField(max_length=40, primary_key=True)
+	abbreviation = models.CharField(max_length=10, unique=True)
+	description = models.CharField(max_length=120, blank=True)
+'''
+	---		person		---
+'''
+class Person(models.Model):
+	profile = models.ImageField(upload_to='clinic/static/clinic/user_profile/', default='clinic/static/clinic/user_profile/no-profile.png')
+	reg_time = models.DateTimeField('Registration Time', auto_now_add=True)
 
-class Human(models.Model):
-    profile = models.ImageField(upload_to = 'clinic/profile_pictures/', blank=True, default='clinic/profile_pictures/generic_profile.png')
-    reg_time = models.DateTimeField("Registration Time", auto_now_add=True)
+	first_name = models.CharField(max_length=20)
+	middle_name = models.CharField(max_length=20, blank=True)
+	last_name = models.CharField(max_length=20)
 
-    first_name = models.CharField(max_length=20)
-    middle_name = models.CharField(max_length=20, blank=True)
-    last_name = models.CharField(max_length=20, blank=True)
-    
-    gender = models.CharField(choices=(('M', 'Male'), ('F', 'Female'), ('O', 'Other'), ), max_length=1)
-    phone_number = models.BigIntegerField()
-    dob = models.DateField('Date of Birth')
-    email = models.CharField('Email Address', max_length=40, blank=True)
-    bld_grp = models.SmallIntegerField("Blood Group", choices=bld_grps)
+	gender = models.CharField(choices=(('M', 'Male'), ('F', 'Female'), ('O', 'Other'), ), max_length=1)
+	dob = models.DateField('Date of Birth')
+	blood_type = models.PositiveSmallIntegerField(choices=consts.blood_groups, blank=True)
+	bio = models.CharField('Biography', max_length=250, blank=True)
 
-    s_address = models.CharField("Street Address", max_length=100)
-    city = models.CharField(max_length=40, blank=True)
-    state = models.CharField(choices=states, max_length=2)
-    country = models.CharField(choices=countries, max_length=2) 
-    pincode = models.IntegerField()
+	email = models.CharField('Email Address', max_length=40, blank=True, validators=[v.validate_email])
 
-    def name(self):
-        return self.first_name + " " + self.last_name
-    
-    def save(self, *args, **kwargs):
-        self.first_name = utils.titlecase(self.first_name)
-        self.middle_name = utils.titlecase(self.middle_name)
-        self.last_name = utils.titlecase(self.last_name)
-        super().save(*args, **kwargs)
+	def full_name(self):
+		return self.first_name + ' ' + self.middle_name + ' ' + self.last_name
 
-    def __str__(self):
-        return self.name()
+	def name(self):
+		return {'first_name' : self.first_name, 'middle_name' : self.middle_name, 'last_name' : self.last_name,}
 
+	def dict_emergency_contact(self):
+		return self.emergency_contact.dict()
 
-class Doctor(Human):
-    username = models.CharField(max_length=20, primary_key=True)
-    password = models.CharField(max_length=100)
-    
-    speciality  = models.CharField('Medical specialties', choices=specialties, max_length=3, default='gp')
-    qual = models.CharField('Qualification', max_length=20, default='', blank=True)
-    bio = models.CharField('Biography', max_length=120, blank=True)  
+	def age(self):
+		return utils.getAge(self.dob)
 
-    custom_pbkdf2 = pbkdf2_sha256.using(rounds=2146)
+	def get_profile_url(self):
+		# TODO: FIX THIS
+		try:
+			self.profile.file; self.profile.close()
+		except Exception:
+			self.profile = None;
+		finally:
+			if not self.profile:
+				base = 'clinic/user_profile/'
+				postfix = 'avatar.min.png'
+				if(self.gender != 'O'):
+					postfix = 'doctor.' + ('m' if self.gender == 'M' else 'f') + '.min.png'
+				return base + postfix
+			else:
+				return ''.join(list(str(self.profile))[13:])
 
-    def __str__(self):
-        return '%s (%s)' % (super().__str__(), self.qual) if self.qual else super().__str__()
+	def save(self, *args, **kwargs):
+		for i in [self.first_name, self.middle_name, self.last_name]:
+			i = utils.titlecase(i)
+		super().save(*args, **kwargs)
 
-    def verify_user_name(self, user_name):
-        return self.user_name is user_name
+	def __str__(self):
+		return self.first_name + ' ' + self.last_name
 
-    def verify_password(self, password):
-        if password is None or password is '':
-            return False
-        return Doctor.custom_pbkdf2.verify(password, self.password)
+class PersonPhone(models.Model):
+	person = models.OneToOneField(Person, null=True, on_delete=models.CASCADE)
+	phone_number = models.OneToOneField(Phone, null=True, on_delete=models.CASCADE)
 
-    def save(self, *args, **kwargs):
-        if(not '$pbkdf2-sha256$2146$' in self.password):
-            self.password = Doctor.custom_pbkdf2.hash(self.password)
-        self.qual = utils.titlecase(self.qual)
-        self.username = self.username.replace(' ', '')
-        super().save(*args, **kwargs)
+class PersonAddress(models.Model):
+	address = models.OneToOneField(Address, null=True, on_delete=models.CASCADE)
+	person = models.OneToOneField(Person, null=True, on_delete=models.CASCADE)
 
+class EmergencyContact(models.Model):
+	person = models.OneToOneField(Person, null=True, on_delete=models.SET_NULL)
+	er_cont_name = models.CharField('Emergency Contact Name', max_length=50, blank=True)
+	er_rel = models.CharField('Relationship with the Emergency contact', max_length=1, \
+							   choices=(('S', 'Sprouse'), ('P', 'Parent'), ('s', 'Sibling'), \
+									 	('G', 'Guardian'), ('O', 'Other'), ))
 
-class Patient(Human):
-    er_cont_name = models.CharField('Emergency Contact Name', max_length=50, blank=True)
-    relation = models.CharField("Relation with the contact", max_length=10, blank=True)
-    emergency_contact = models.BigIntegerField(blank=True)
-    
-    occupation = models.CharField(max_length=40, null=True, blank=True)
-    med_info = models.CharField('Medical Information', max_length=100, blank=True)
+	def dict(self):
+		return {'name' : self.er_cont_name, 'number' : er_number, 'relationship' : er_rel, }
 
+class EmergencyContactPhone(models.Model):
+	emergency_contact = models.OneToOneField(EmergencyContact, null=True, on_delete=models.CASCADE)
+	phone_number = models.OneToOneField(Phone, null=True, on_delete=models.CASCADE)
+'''
+	---		end		---
 
+	---		doctor	---
+'''
+class Doctor(Person):
+	custom_pbkdf2 = pbkdf2_sha256.using(rounds=2146)
+
+	username = models.CharField(max_length=20, primary_key=True, validators=[v.validate_username])
+	password = models.CharField(max_length=100, validators=[v.validate_password])
+	speciality  = models.CharField('Practitioner type', choices=consts.specialties, max_length=3,)
+	qual = models.CharField('Qualification', max_length=20, blank=True)
+
+	def __str__(self):
+		return '%s (%s)' % (super().__str__(), self.qual) if self.qual else super().__str__()
+
+	def verify_user_name(self, user_name):
+		return self.user_name is user_name
+
+	def verify_password(self, password):
+		if password: return False
+		return Doctor.custom_pbkdf2.verify(password, self.password)
+
+	def save(self, *args, **kwargs):
+		if(not '$pbkdf2-sha256$2146$' in self.password):
+			self.password = Doctor.custom_pbkdf2.hash(self.password)
+		self.qual = utils.titlecase(self.qual)
+		self.username = self.username.replace(' ', '_')
+		super().save(*args, **kwargs)
+'''
+	---			end			---
+
+	---		other people	---
+'''
+class Patient(Person):
+	occupation = models.CharField(max_length=40, blank=True)
+	med_info = models.CharField('Medical Information', max_length=100, blank=True)
+'''
+	---		clinic		---
+'''
+class Clinic(models.Model):
+	clinic_head = models.OneToOneField(Doctor, on_delete=models.CASCADE)
+	name = models.CharField(max_length=30)
+
+	def __str__(self):
+		return "%s by '%s'" % (self.name, str(self.clinic_head))
+
+class ClinicPhone(models.Model):
+	clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
+	phone_number = models.OneToOneField(Phone, null=True, on_delete=models.SET_NULL)
+
+class Branch(models.Model):
+	clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
+	branch_head = models.OneToOneField(Doctor, on_delete=models.CASCADE)
+	name = models.CharField(max_length=30)
+	doe = models.DateField('Date of Establishment')
+	type = models.CharField(choices=consts.clinic_type, max_length=2)
+
+class BranchAssistantDoctor(models.Model):
+	doctor = models.OneToOneField(Doctor, on_delete=models.SET_NULL, null=True)
+	branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True)
+	salary = models.IntegerField()
+
+class BranchEmployee(models.Model):
+	person = models.OneToOneField(Person, on_delete=models.SET_NULL, null=True)
+	branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True)
+	qual = models.CharField('Qualification', max_length=20, blank=True)
+	salary = models.IntegerField()
+	role = models.CharField(max_length=20);
+	# TODO: ADD ROLE ENUM
+
+class BranchAddress(models.Model):
+	Branch = models.OneToOneField(Branch, on_delete=models.CASCADE)
+	address = models.OneToOneField(Address, null=True, on_delete=models.SET_NULL)
+
+class BranchPhone(models.Model):
+	branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+	phone_number = models.OneToOneField(Phone, null=True, on_delete=models.SET_NULL)
+
+class BranchTimming(models.Model):
+	branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+	start = models.TimeField('Opens at')
+	end = models.TimeField('Closes at')
+	day = models.CharField(choices=consts.weekdays, max_length=3)
+'''
+	---		end		---
+
+	---		case	---
+'''
 class Case(models.Model):
-    disease = models.ForeignKey(Disease, on_delete=models.CASCADE)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    reg_time = models.DateField('Initial vist', default=timezone.now)
-    l_visit = models.DateField('Last vist', null=True, blank=True, default=None)
+	title = models.CharField(max_length=50)
+	doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+	patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+	date = models.DateTimeField('Registration date', default=timezone.now)
+	refer = models.CharField(max_length=180, blank=True)
 
-    def __str__(self):
-        return "(%s : %s) - %s" % (str(self.patient), self.disease.name, str([str(x) for x in self.doctors.all()]).replace("\'", ''))
+	def __str__(self):
+	    return "%s - %s (%s)" % (self.title, self.patient, self.date.date())
 
-    def is_closed(self):
-        if(self.l_visit is None):
-            return False
-        return self.l_visit <= timezone.now()
+class CaseDisease(models.Model):
+	case = models.ForeignKey(Case, on_delete=models.CASCADE)
+	disease = models.OneToOneField(Disease, on_delete=models.CASCADE)
+'''
+	---     Visit    ---
+'''
+class CaseVisit(models.Model):
+	case = models.ForeignKey(Case, on_delete=models.CASCADE)
+	time = models.DateTimeField('Visit Time', default=timezone.now)
+	fees = models.PositiveSmallIntegerField(default=100)
+	notes = models.CharField(max_length=200, blank=True)
 
-    is_closed.admin_order_field = '-reg_time'
-    is_closed.boolean = True
-    is_closed.short_description = 'Is case closed?'
-    
+class VisitDrug(models.Model):
+	visit = models.ForeignKey(CaseVisit, on_delete=models.CASCADE)
+	drug = models.OneToOneField(Drug, on_delete=models.CASCADE)
+	dose = models.CharField(max_length=20)
 
-class Appointment(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    case = models.ForeignKey(Case, on_delete=models.PROTECT)
-    time = models.DateTimeField("Appointment Time", default=utils.get_adv_date)
-    loc = models.CharField('Location', choices=(('C', 'Clinic'), ('h', 'House Vist'), ('v', 'Visting'), ('ct', 'Custom')), max_length=1, default='C')
-    cus = models.CharField("Custom Location", max_length=80, blank=True, null=True)
+class VisitComplaint(models.Model):
+	visit = models.ForeignKey(CaseVisit, on_delete=models.CASCADE);
+	complaint = models.CharField(max_length=40)
+	description = models.CharField(max_length=120, blank=True)
+	status = models.CharField(max_length=30)
 
-    def __str__(self):
-        return "%s:%s- %s" % (self.patient, self.doctor, str(self.time))
+	def __str__(self):
+		return self.complaint + ' ' + self.status
+'''
+	---		end		---
+'''
+class CaseAppointment(models.Model):
+	doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+	patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+	case = models.ForeignKey(Case, on_delete=models.PROTECT)
 
+	time = models.DateTimeField('Appointment Time', default=utils.get_adv_date)
+	location = models.CharField('Location', choices=consts.custom_location, max_length=1, default='C')
+	custom_location = models.CharField(max_length=50, blank=True)
 
-class FollowUp(models.Model):
-    case = models.ForeignKey(Case, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    
-    title = models.CharField(max_length=50)
-    symptoms = models.ManyToManyField(Symptom)
-    prescriptions = models.ManyToManyField(Medicine)
-    pat_comp = models.CharField('Pratient\'s Complaint', max_length=100, null=True, blank=True)
-    note = models.CharField(max_length=100, null=True, blank=True)
-    
-    fee = models.PositiveSmallIntegerField(blank=True, default=100)
-    gift = models.BooleanField(default=False)
-    time = models.DateTimeField('Follow-Up Time', default=timezone.now)
-    
-    def __str__(self):
-        return "(%s : %s) - %s" % (str(self.case.patient), self.case.disease.name, str(self.doctor))
+	def __str__(self):
+		return '(%s : %s) @ %s at %s' % (self.patient, self.doctor, \
+									(("".join([i[1] for i in consts.custom_location if i[0] == self.location])) \
+											if self.location != 'c' else self.custom_location), self.time.time())
+'''
+	---		case_end	---
+'''
 
-    def is_settled(self):
-        return self.gift and bool(self.fees)
-
-    def get_patient(self):
-        return self.case.patient
-
-    is_settled.admin_order_field = '-time'
-    is_settled.boolean = True
-    is_settled.short_description = 'Is settled?'
-    get_patient.short_description = 'Patient'
-
-
-    
+# TODO: Complete This
+# class Event(models.Model):
+#     pk = models.CharField(max_length=20)
+#     model_altered = models.CharField(max_length=20)

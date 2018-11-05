@@ -1,0 +1,30 @@
+{% extends 'clinic/base.html' %}
+{% load static %}
+{% load view-helper %}
+{% block title %} {{ doctor }} | Clinic {% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+
+{% include 'clinic/includes/header.html' %}
+<div class="container py-4">
+	<div class="row">
+		<div class="col-12 col-md-9">
+			<div class="calender">Calender</div><hr>
+			<div class="row">
+				<div>
+					<ul>
+						<li><a href="{% url 'clinic:add' 'patient' %}">Add Patient</a></li>
+						{# <li><a href="{% url 'clinic:view' 'patient' 'all'%}">View All Patient</a> #}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="side-bar" class="col-12 col-md-3">
+			{% sub_menu_e "Upcoming" %}
+			{% sub_menu_e "Recents" %}
+		</div>
+	</div>
+</div>
+{% include 'clinic/includes/footer.html' %}
+{% endblock %}

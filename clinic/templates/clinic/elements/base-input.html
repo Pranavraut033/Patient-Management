@@ -1,0 +1,36 @@
+{% spaceless %}
+{% load utilities %}
+{% if id %}
+    {% set name = id%}
+{% else %}
+    {% set name = field.attname%}
+{% endif %}
+{% set errors = extra.errors %}
+<div class="form-group col-12 {{ col }}">
+    <label class="sr-only" for="id_{{ name }}">{{ label }}</label>
+    <div class="input-group">
+        {% if icon %}
+        {% ifequal i_opts "prefix" %}
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="material-icons prefix">{{ icon }}</i>
+            </div>
+        </div>
+        {% endifequal %}
+        {% endif %}
+        {% block content %} {% endblock %}
+        {% if icon %}
+        {% ifequal i_opts "sufix" %}
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <i class="material-icons prefix">{{ icon }}</i>
+            </div>
+        </div>
+        {% endifequal %}
+        {% endif %}
+    </div>
+    {% if errors %}
+        <small class="form-text text-muted" data-success="">{% err errors name%}</small>
+    {% endif %}
+</div>
+{% endspaceless %}

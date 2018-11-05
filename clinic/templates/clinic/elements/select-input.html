@@ -1,0 +1,17 @@
+{% extends 'clinic/elements/base-input.html'%}
+{% block content %}
+{% load utilities %}
+<select class="form-control" name="{{ name }}"
+        id="id_{{ name }}" {% if required %} required {% endif%}>
+    {% if default is None %}
+        <option value="" selected disabled>-{{ label }}-</option>
+        {% for val in vals %}
+            <option value="{{ val.0 }}">{{ val.1 }}</option>
+        {% endfor %}
+    {% else %}
+        {% for val in vals %}
+            <option value="{{ val.0 }}" {% ifequal val.0 default %} selected {% endifequal %}>{{ val.1 }}</option>
+        {% endfor %}
+    {% endif %}
+</select>
+{% endblock %}

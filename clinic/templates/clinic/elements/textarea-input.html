@@ -1,0 +1,7 @@
+{% extends 'clinic/elements/base-input.html'%}
+{% load utilities %}
+{% block content %}
+<textarea id="id_{{ name }}" class="form-control" name="{{ name }}"
+        {% if required %} required {% endif%} maxlength="{{ field.max_length }}"
+        rows="{{ rows }}" placeholder="{{ label }}" {{ options }}>{% if default %} {{ default }} {% endif %}</textarea>
+{% endblock %}

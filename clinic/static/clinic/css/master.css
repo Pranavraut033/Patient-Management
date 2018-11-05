@@ -1,0 +1,106 @@
+html, body, #login .outer {
+    height: 100%;
+    width: 100%;
+}
+body {
+    min-height: 600px;
+}
+
+/* TODO: Add Animation */
+.errorblock {
+    margin: 10px;
+    background-color: #EF5350;
+    border: 1px solid #c62828;
+    border-radius: 20px;
+    color: white;
+    padding: 3px 10px;
+    text-align: center;
+}
+.errorlist {
+    list-style: none;
+    padding: 0px;
+    margin: 0.5em 0px -0.5em;
+    text-align: right;
+}
+.errorlist>li {
+    border: 1px solid #f44336;
+    padding: 3px 10px;
+    width: fit-content;
+    display: inline-block;
+    margin: auto;
+    border-radius: 20px;
+    background-color: #EF5350;
+    color: #f1f1f1;
+}
+.errorlist>li::after {
+    content: '';
+    position: absolute;
+    margin-top: -.9em;
+    right: 1.9em;
+    width: 10px;
+    height: 10px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #EF5350;
+}
+/* NOTE: Login Style */
+body#login {
+    background-image: url("../img/med_bg.jpg");
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.outer {
+    display: table;
+    position: absolute;
+}
+.outer .middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+/* END */
+
+/* NOTE: Header + Footer Style */
+@media (max-width: 992px) {
+    #search-form #search-bar {
+        min-width: auto;
+    }
+    #search-form {
+        width: 100% !important
+    }
+}
+@media (min-width: 1002px) {
+    #search-form #search-bar {
+        min-width: 500px;
+    }
+}
+#profile-block img {
+    width: 30px;
+    height: auto;
+    margin-right: .2em;
+    border: 1px solid #6c757d;
+    background-color: #f1f1f1;
+}
+#profile-block:hover img {
+    background-color: #6c757d;
+}
+/* END */
+
+/* NOTE: Index Style */
+/* NOTE: sidebar */
+#side-bar .item .title {
+    margin: 0px;
+    padding: 5px 5px 0px 5px;
+}
+#side-bar .item p {
+    margin: 0px;
+    padding: 0px 5px 5px 5px;
+    float: right;
+}
+#side-bar button:focus {
+    outline: none;
+}
+/* END */

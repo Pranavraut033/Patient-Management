@@ -1,0 +1,21 @@
+{% load utilities %}
+<div id="#{% id title %}">
+    <button class="navbar-toggler drop_arrow" type="button" data-toggle="collapse" data-target="#{{title}}-content">
+        <h4 class="title">{{ title }}
+        <i class="material-icons">arrow_drop_down</i>
+        </h4>
+    </button>
+    {# {% if collapse %}class="collapse"{% endif %} #}
+    <div class="collapse"  id="{{ title }}-content">
+        <div class="p-2">
+            <div class="item card mb-3 px-2 py-1">
+                <!-- TODO: add data-->
+                <img class="recent-card profile-icon">
+                <h5 class="title">{{ object.get_name }} #Name</h5>
+                <p>{{ description }} #Description</p>
+                <div class="recent-card content">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

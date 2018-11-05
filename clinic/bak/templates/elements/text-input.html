@@ -1,0 +1,6 @@
+{% extends 'elements/base-input.html'%}
+{% block content %}
+<input type="{{ type }}" name="{{ fld.attname }}" id="id_{{ fld.attname }}" {% if default is not None %} value="{{ default }}" {% endif %}
+            {% if required %} required {% endif%} {% if fld.max_length is not None %} {% if max_length is null %} 
+            maxlength="{{ fld.max_length }}" {% else %} maxlength="{{ max_length }}" {% endif %} {% endif %} {{ options }}>
+{% endblock %}

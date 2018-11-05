@@ -1,0 +1,41 @@
+{% extends 'clinic/base.html' %}
+{% load static %}
+{% block title %} Login | Clinic {% endblock %}
+{% load view-helper %}
+{% block head %}
+	<script>
+		function nospaces(t) {
+          	if(t.value.match(/\s/g)) t.value=t.value.replace(' ','');
+       	}
+	</script>
+{% endblock %}
+{% block body_ots %}id="login"{% endblock %}
+{% block body %}
+<div class="outer">
+	<div class="container middle">
+		<div class="row">
+			<div class="col col-sm-6 col-lg-4 offset-sm-2 ">
+				{% if ermsg %}
+				<div class="errorblock">{{ ermsg }}</div>
+				{% endif %}
+				<div class="card border-primary">
+					<div class="card-header">
+						<h2 class="card-title text-primary m-0">Clinic <small class="text-muted">login</small></h2>
+					</div>
+					<div class="card-body">
+						<form method="post">
+							{% csrf_token %}
+							{% input object 'username' 'col-auto' icon='face' extra=extra %}
+							{% input object 'password' 'col-auto' 'password' icon='vpn_key' extra=extra%}
+							<div class="text-right">
+								<button type="submit" class="card-link btn btn-primary">Login</button>
+								{# <a href="{% url 'clinic:add' 'doctor'%}" class="card-link">New Doctor?</a> #}
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

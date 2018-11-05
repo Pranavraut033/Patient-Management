@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+<meta charset="utf-8">
+	<meta name="author" content="Pranav Raut">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!--Import Google Icon Font-->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!--Import materialize.css-->
+	<link type="text/css" rel="stylesheet" href="{% static '/css/materialize.min.css' %}" media="screen,projection" />
+<!--	<link type="text/css" rel="stylesheet" href="{% static '/css/input-accent.css' %}">-->
+	<title>{% block title %} {% endblock %}</title>
+	{% block head %} {% endblock %}
+</head>
+<body>
+	{% block body %}
+	{% endblock %}
+	<script type="text/javascript" src="{% static '/js/materialize.min.js' %}"></script>
+</body>
+</html>
