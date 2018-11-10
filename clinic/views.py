@@ -5,6 +5,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from clinic.forms import *
 from clinic.models import *
 from clinic.utils import log, utilities
+<<<<<<< HEAD
+=======
+from clinic.forms import *
+>>>>>>> 5ab21846fc6691c11e626fe83a36c178362f9805
 
 logger = log.Logger()
 
@@ -84,7 +88,10 @@ def add_patient(request):
 	if request.method == "POST":
 		if form.is_valid:
 			p = form.save()
+<<<<<<< HEAD
 			return redirect('/clinic/view/patient/' + str(p.pk))
+=======
+>>>>>>> 5ab21846fc6691c11e626fe83a36c178362f9805
 		else:
 			context['extra'] = {'data' : None, 'errors' : dict(forms.get_errors()), }
 	else:
@@ -97,10 +104,13 @@ add_functions = {
 
 def add(request, model):
 	return add_functions[model](request)
+<<<<<<< HEAD
 
 def view(request, model, pk):
 	# TODO: AddView For viewing models
 	raise Http404
+=======
+>>>>>>> 5ab21846fc6691c11e626fe83a36c178362f9805
 
 # models = {'doctor' : Doctor,
 # 		  'patient' : Patient,
