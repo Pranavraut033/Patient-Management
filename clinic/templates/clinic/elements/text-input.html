@@ -1,5 +1,5 @@
 {% extends 'clinic/elements/base-input.html'%}
 {% load utilities %}
 {% block content %}
-<input class="form-control" id="id_{{ name }}" type="{{ type }}" name="{{ name }}" placeholder="{{ label }}"{% if default is not None %} value="{{ default }}"{% endif %}{% if field.max_length is not None %}{% if max_length is null %}maxlength="{{ field.max_length }}"{% else %}maxlength="{{ max_length }}"{% endif %}{% endif %}{% if required %} required {% endif%}>
+<input class="form-control" id="id_{{ name }}" type="{{ type }}" name="{{ name }}" placeholder="{{ label }}"{% if default is not None %} value="{{ default }}"{% endif %}{% if field.max_length is not None %}{% if max_length is null %}maxlength="{{ field.max_length }}"{% else %}maxlength="{{ max_length }}"{% endif %}{% endif %}{% if required %} required {% endif%} {{ options }}>
 {% endblock %}

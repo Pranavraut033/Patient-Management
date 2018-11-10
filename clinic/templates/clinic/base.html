@@ -1,21 +1,25 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
-<meta charset="utf-8">
+	<meta charset="utf-8">
 	<meta name="author" content="Pranav Raut">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link type="text/css" rel="stylesheet" href="{% static 'clinic/css/bootstrap.min.css' %}" media="screen,projection" />
-	<link type="text/css" rel="stylesheet" href="{% static 'clinic/css/master.min.css' %}" media="screen,projection" />
+	<link type="text/css" rel="stylesheet" href="{% static 'clinic/css/master.css' %}" media="screen,projection" />
+	<link href="https://fonts.googleapis.com/css?family=Baloo+Paaji|Cutive+Mono|Varela+Round&amp;subset=hebrew" rel="stylesheet">
 	<title>{% block title %} {% endblock %}</title>
 	{% block head %} {% endblock %}
 </head>
+
 <body {% block body_ots %} {% endblock %} class="bg-light">
-	{% block body %}{% endblock %}
+	{% block body %} {% endblock %}
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script type="text/javascript" src="{% static 'clinic/js/popper.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'clinic/js/jquery.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'clinic/js/bootstrap.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'clinic/js/master.js' %}"></script>
 </body>
+
 </html>

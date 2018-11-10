@@ -11,7 +11,7 @@ def get_default(field):
     return None if field.default is NOT_PROVIDED else field.default
 
 '''
-    kwargs: icon, i_opts 'icon-options', options 'string for all other options'
+    kwargs: icon, i_opts 'icon-options', options 'string for all other attribute'
 '''
 def input_generic(object, field_name, col='', label=None, **kwargs):
     field = object._meta.get_field(field_name)

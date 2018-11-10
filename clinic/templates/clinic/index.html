@@ -1,21 +1,19 @@
-{% extends 'clinic/base.html' %}
+{% extends 'clinic/base_extra.html' %}
 {% load static %}
 {% load view-helper %}
 {% block title %} {{ doctor }} | Clinic {% endblock %}
-{% block head %}
-{% endblock %}
+{% block body_ots %} id="one-page" {% endblock%}
 {% block body %}
-
-{% include 'clinic/includes/header.html' %}
-<div class="container py-4">
+{% include "clinic/includes/header.html" %}
+<div class="container content-main">
 	<div class="row">
 		<div class="col-12 col-md-9">
 			<div class="calender">Calender</div><hr>
 			<div class="row">
 				<div>
 					<ul>
-						<li><a href="{% url 'clinic:add' 'patient' %}">Add Patient</a></li>
-						{# <li><a href="{% url 'clinic:view' 'patient' 'all'%}">View All Patient</a> #}
+						 <li><a href="{% url 'clinic:add' 'patient' %}">Add Patient</a></li>
+					 	{# <li><a href="{% url 'clinic:view' 'patient' 'all'%}">View All Patient</a> #} 
 					</ul>
 				</div>
 			</div>
@@ -26,5 +24,5 @@
 		</div>
 	</div>
 </div>
-{% include 'clinic/includes/footer.html' %}
+{% include "clinic/includes/footer.html" %}
 {% endblock %}

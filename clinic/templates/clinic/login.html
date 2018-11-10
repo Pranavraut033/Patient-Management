@@ -1,41 +1,39 @@
-{% extends 'clinic/base.html' %}
+{% extends 'clinic/base_extra.html' %}
 {% load static %}
 {% block title %} Login | Clinic {% endblock %}
 {% load view-helper %}
-{% block head %}
-	<script>
-		function nospaces(t) {
-          	if(t.value.match(/\s/g)) t.value=t.value.replace(' ','');
-       	}
-	</script>
-{% endblock %}
-{% block body_ots %}id="login"{% endblock %}
-{% block body %}
-<div class="outer">
-	<div class="container middle">
-		<div class="row">
-			<div class="col col-sm-6 col-lg-4 offset-sm-2 ">
-				{% if ermsg %}
-				<div class="errorblock">{{ ermsg }}</div>
-				{% endif %}
-				<div class="card border-primary">
-					<div class="card-header">
-						<h2 class="card-title text-primary m-0">Clinic <small class="text-muted">login</small></h2>
-					</div>
-					<div class="card-body">
-						<form method="post">
-							{% csrf_token %}
-							{% input object 'username' 'col-auto' icon='face' extra=extra %}
-							{% input object 'password' 'col-auto' 'password' icon='vpn_key' extra=extra%}
-							<div class="text-right">
-								<button type="submit" class="card-link btn btn-primary">Login</button>
-								{# <a href="{% url 'clinic:add' 'doctor'%}" class="card-link">New Doctor?</a> #}
-							</div>
-						</form>
-					</div>
+{% block body_ots %} id="one-page" {% endblock %}
+{% block content %}
+<div class="container content-main">
+	<div class="row align-items-center">
+		<div class="col-12 col-md-5 promotion-block">
+			<h2 class="title">Welcome, Doctor</h2><hr>
+			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		</div>
+		<div class="col-12 offset-md-1 col-md-5 align-middle">
+			{% if ermsg %}
+			<div class="alert alert-danger alert-dismissiable fade show rounded" data-toggle="tooltip" data-placement="top" title="Click to dismiss">
+				<span data-dismiss="alert">{{ ermsg }}</span>
+			</div>
+			{% endif %}
+			<div class="card border-primary">
+				<div class="card-header">
+					<h2 class="card-title text-primary m-0">Clinic <small class="text-muted">login</small></h2>
+				</div>
+				<div class="card-body">
+					<form if="form" method="post">
+						{% csrf_token %}
+						{% input model_doctor 'username' 'col-auto' icon='face' extra=extra options='pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{1,20}$" title="Invalid Username format"'%}
+						{% input model_doctor 'password' 'col-auto' 'password' icon='vpn_key' extra=extra %}
+						<div class="text-right">
+							<button type="submit" class="card-link btn btn-primary">Login</button>
+							{# <a href="{% url 'clinic:add' 'doctor'%}" class="card-link">New Doctor?</a> #}
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
+		<div class="col-0 col-md-1 d-none d-sm-flex" style="height:85vh; width: 1px;"></div>
 	</div>
 </div>
 {% endblock %}

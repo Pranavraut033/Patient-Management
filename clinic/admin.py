@@ -27,7 +27,7 @@ class CBranchEmployeeInline(nested_admin.NestedTabularInline):
 	model = BranchEmployee
 	extra = 2
 
-class CBranchInline(nested_admin.NestedTabularInline):
+class CBranchInline(nested_admin.NestedStackedInline):
 	model = Branch
 	extra = 0
 	inlines = [CBranchEmployeeInline, CBranchPhoneInline, CBranchAssistantDoctorInline, CBranchAddressInline, CBranchTimmingInline, ]
@@ -104,7 +104,7 @@ class DoctorAdmin(PersonAdmin):
 class PatientAdmin(PersonAdmin):
 	fieldsets = [
 		com_info,
-		('Extra', {'fields':['occupation','med_info']}),
+		('Extra', {'fields':['clinic', 'occupation','med_info']}),
 	]
 	list_display = ('full_name', 'email', 'reg_time')
 '''
@@ -114,27 +114,35 @@ class PatientAdmin(PersonAdmin):
 '''
 class VisitDrugInline(nested_admin.NestedTabularInline):
 	model = VisitDrug
-	extra = 1
+	extra = 0
 
 class VisitComplaintInLine(nested_admin.NestedTabularInline):
 	model = VisitComplaint
 	extra = 1
 
+class VisitExaminationInline(nested_admin.NestedTabularInline):
+	model = VisitExamination
+	extra = 1
+
 class CaseVisitInline(nested_admin.NestedTabularInline):
 	model = CaseVisit
 	extra = 1
-	inlines = [VisitDrugInline, VisitComplaintInLine,]
+	inlines = [VisitDrugInline, VisitComplaintInLine, VisitExaminationInline]
 
 class CaseDiseaseInline(nested_admin.NestedTabularInline):
 	model = CaseDisease
 	extra = 1
+
+class CaseReportInline(nested_admin.NestedTabularInline):
+	model = CaseReport
+	extra = 0
 
 class CaseAdmin(nested_admin.NestedModelAdmin):
 	fieldsets = [
 		('Details', {'fields': ['title', 'doctor', 'patient', 'date',]}),
 		('Extra', {'fields': ['refer',]})
 	]
-	inlines = [CaseDiseaseInline, CaseVisitInline]
+	inlines = [CaseDiseaseInline, CaseReportInline, CaseVisitInline]
 	list_display = ('title', 'patient', 'date')
 '''
 	- End -

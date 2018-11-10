@@ -1,13 +1,15 @@
+import os, datetime
+
 from django.db import models
 from django.utils import timezone
-import datetime
 from passlib.hash import pbkdf2_sha256
-from clinic.utils import utilities as utils
+
+import clinic.utils.utilities as utils
 import clinic.utils.constants as consts
 import clinic.utils.validators as v
-
+from clinic.utils.log import Logger
 # NOTE: ADD ManyToManyField, ForeignKey Field first before adding parent in the database
-
+logger = Logger()
 def get_adv_date():
 	return utils.get_adv_date(7)
 
@@ -19,10 +21,7 @@ class Phone(models.Model):
 	type = models.CharField(choices=consts.phone_type, max_length=1, default='h')
 
 	def __str__(self):
-		i = 'Home'
-		for s in consts.phone_type:
-			if s[0] == self.type: i = s[1]; break
-		return str(self.phone_number) + ' (' + i + ')'
+		return str(self.phone_number) + ' (' + self.get_type_display()+ ')'
 
 class Address(models.Model):
 	s_address = models.CharField('Street Address', max_length=100)
@@ -46,8 +45,12 @@ class Drug(models.Model):
 '''
 	---		person		---
 '''
+def user_profile_directory(instance, filename):
+	ext = os.path.splitext(filename)[1]
+	return 'clinic/static/clinic/user_profile/%s-%s%s' % (instance.first_name, timezone.now().timestamp(), ext)
+
 class Person(models.Model):
-	profile = models.ImageField(upload_to='clinic/static/clinic/user_profile/', default='clinic/static/clinic/user_profile/no-profile.png')
+	profile = models.ImageField(upload_to=user_profile_directory, default='clinic/static/clinic/user_profile/no-profile.png')
 	reg_time = models.DateTimeField('Registration Time', auto_now_add=True)
 
 	first_name = models.CharField(max_length=20)
@@ -74,20 +77,11 @@ class Person(models.Model):
 		return utils.getAge(self.dob)
 
 	def get_profile_url(self):
-		# TODO: FIX THIS
 		try:
-			self.profile.file; self.profile.close()
-		except Exception:
-			self.profile = None;
-		finally:
-			if not self.profile:
-				base = 'clinic/user_profile/'
-				postfix = 'avatar.min.png'
-				if(self.gender != 'O'):
-					postfix = 'doctor.' + ('m' if self.gender == 'M' else 'f') + '.min.png'
-				return base + postfix
-			else:
-				return ''.join(list(str(self.profile))[13:])
+			return utils.getimage(self.profile)
+		except Exception as ex:
+			print(ex)
+			return 'clinic/user_profile/no-profile.png'
 
 	def save(self, *args, **kwargs):
 		for i in [self.first_name, self.middle_name, self.last_name]:
@@ -117,7 +111,7 @@ class EmergencyContact(models.Model):
 
 class EmergencyContactPhone(models.Model):
 	emergency_contact = models.OneToOneField(EmergencyContact, null=True, on_delete=models.CASCADE)
-	phone_number = models.OneToOneField(Phone, null=True, on_delete=models.CASCADE)
+	er_phone_number = models.OneToOneField(Phone, null=True, on_delete=models.CASCADE)
 '''
 	---		end		---
 
@@ -138,8 +132,8 @@ class Doctor(Person):
 		return self.user_name is user_name
 
 	def verify_password(self, password):
-		if password: return False
-		return Doctor.custom_pbkdf2.verify(password, self.password)
+		if not password: return False
+		return self.custom_pbkdf2.verify(password, self.password)
 
 	def save(self, *args, **kwargs):
 		if(not '$pbkdf2-sha256$2146$' in self.password):
@@ -152,9 +146,6 @@ class Doctor(Person):
 
 	---		other people	---
 '''
-class Patient(Person):
-	occupation = models.CharField(max_length=40, blank=True)
-	med_info = models.CharField('Medical Information', max_length=100, blank=True)
 '''
 	---		clinic		---
 '''
@@ -163,7 +154,12 @@ class Clinic(models.Model):
 	name = models.CharField(max_length=30)
 
 	def __str__(self):
-		return "%s by '%s'" % (self.name, str(self.clinic_head))
+		return self.name
+
+class Patient(Person):
+	occupation = models.CharField(max_length=40, blank=True)
+	med_info = models.CharField('Medical Information', max_length=100, blank=True)
+	clinic = models.ForeignKey(Clinic, on_delete=models.SET_NULL, null=True)
 
 class ClinicPhone(models.Model):
 	clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
@@ -175,6 +171,9 @@ class Branch(models.Model):
 	name = models.CharField(max_length=30)
 	doe = models.DateField('Date of Establishment')
 	type = models.CharField(choices=consts.clinic_type, max_length=2)
+
+	def __str__(self):
+		return "%s, %s (%s) - %s" % (self.clinic.name, self.name, self.get_type_display(), self.doe)
 
 class BranchAssistantDoctor(models.Model):
 	doctor = models.OneToOneField(Doctor, on_delete=models.SET_NULL, null=True)
@@ -215,11 +214,21 @@ class Case(models.Model):
 	refer = models.CharField(max_length=180, blank=True)
 
 	def __str__(self):
-	    return "%s - %s (%s)" % (self.title, self.patient, self.date.date())
+	    return '%s - %s (%s)' % (self.title, self.patient, self.date.date())
 
 class CaseDisease(models.Model):
 	case = models.ForeignKey(Case, on_delete=models.CASCADE)
 	disease = models.OneToOneField(Disease, on_delete=models.CASCADE)
+
+def report_directory(instance, filename):
+	ext = os.path.splitext(filename)[1]
+	return 'clinic/static/clinic/reports/%s%s.%s' % (instance.case.title, instance.title + ext)
+
+class CaseReport(models.Model):
+	case = models.ForeignKey(Case, on_delete=models.CASCADE)
+	title = models.CharField(max_length=80)
+	key_read = models.CharField("Key Reading", max_length=50, blank=True)
+	photo = models.ImageField(upload_to=report_directory, blank=True)
 '''
 	---     Visit    ---
 '''
@@ -232,7 +241,12 @@ class CaseVisit(models.Model):
 class VisitDrug(models.Model):
 	visit = models.ForeignKey(CaseVisit, on_delete=models.CASCADE)
 	drug = models.OneToOneField(Drug, on_delete=models.CASCADE)
-	dose = models.CharField(max_length=20)
+	dose = models.CharField(max_length=10)
+
+class VisitExamination(models.Model):
+	visit = models.ForeignKey(CaseVisit, on_delete=models.CASCADE)
+	about = models.CharField(max_length=25)
+	read = models.CharField('Reading', max_length=10)
 
 class VisitComplaint(models.Model):
 	visit = models.ForeignKey(CaseVisit, on_delete=models.CASCADE);
@@ -255,9 +269,8 @@ class CaseAppointment(models.Model):
 	custom_location = models.CharField(max_length=50, blank=True)
 
 	def __str__(self):
-		return '(%s : %s) @ %s at %s' % (self.patient, self.doctor, \
-									(("".join([i[1] for i in consts.custom_location if i[0] == self.location])) \
-											if self.location != 'c' else self.custom_location), self.time.time())
+		return '(%s : %s) @ %s at %s' % (self.patient, self.doctor, self.get_location_display() if self.location != 'c'
+		 														else self.custom_location, self.time.time())
 '''
 	---		case_end	---
 '''

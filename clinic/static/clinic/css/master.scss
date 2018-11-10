@@ -1,0 +1,15 @@
+$theme-colors: (
+  "primary":	#451971,
+  "danger":		#f44336
+);
+$font-family-sans-serif:	'Varela Round', sans-serif;
+$font-family-monospace:		'Cutive Mono', monospace;
+
+$card-border-width:			.075em;
+
+$border-radius:				1.5em;
+$border-radius-lg:			1.5em;
+$border-radius-sm:			1.5em;
+
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "master_base.scss"

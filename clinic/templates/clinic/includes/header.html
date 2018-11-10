@@ -1,37 +1,80 @@
 {% load static %}
 {% load utilities %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+<nav class="navbar {% if doctor %} navbar-expand-lg {% endif %} navbar-light bg-light sticky-top">
+	<a class="navbar-brand" href="{% url 'clinic:index' %}">Clinic</a>
+	{% if doctor %}
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" >
 		<span class="navbar-toggler-icon"></span>
 	</button>
-	<a class="navbar-brand mb-0 h1" href="{% url 'clinic:index' %}">Clinic</a>
 	<div class="collapse navbar-collapse" id="navbar">
-		<form class="form-inline mr-auto ml-auto my-2 my-lg-0" method="put" action="search">
+		{% if branch and not clinic_head %}
+		<span class="nav-text">Branch: {{ branch.name }}</span>
+		{% endif %}
+		<ul class="navbar-nav">
+			{% if clinic_head %}
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">Branch: {% title branch.name %}</a>
+				<div class="dropdown-menu px-2">
+					<small class="dropdown-item-text">{{ branch }}</small>
+					<div class="dropdown-divider"></div>
+					<h6 class="dropdown-header">More Branches</h6>
+					{% for b in branches %}
+					<a class="dropdown-item rounded" href="#">{% title b %}</a>
+					{% endfor %}
+					{% if not branches %}
+					<small class="dropdown-item-text">None</small>
+					{% endif %}
+					<div class="dropdown-divider"></div>
+					<a class="btn btn-primary w-100 rounded" href="#">Add</a>
+				</div>
+			</li>
+			{% endif %}
+		</ul>
+		<form class="form-inline mx-auto my-2 my-lg-0" method="put" action="search">
 			<div id="search-form" class="input-group">
 				<input id="search-bar" class="form-control" type="search" name="q" placeholder="Search here..." >
-				<div class="input-group-append">
-					<button class="btn btn-outline-secondary mr-2 mr-sm-0" type="submit">Search</button>
-					<button class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<span class="sr-only">Toggle Dropdown</span>
+				<div class="input-group-append dropdown">
+					<button class="btn btn-outline-primary" type="submit">Search</button>
+					<button class="btn btn-primary dropdown-toggle dropdown-toggle-split "
+					type="button" data-toggle="dropdown">
 					</button>
-					<div class="dropdown-menu p-4">
-                        foobar is car bus myself at the church tonight is right left me toward the cliff
-                        <br>thol whole hello sit her for go
-                        <br>
-					</div>
+					<ul class="dropdown-menu check-form p-2">
+						<li><h6 class="dropdown-header">Also Search in</h6></li>
+						<li class="form-check justify-content-start">
+							<label href="#" class="form-check-label" data-value="address" tabIndex="-1">
+								<input class="form-check-input" type="checkbox" name="address" hidden>Addresses
+							</label>
+						</li>
+						<li class="form-check ">
+							<label href="#" class="form-check-label" data-value="people" tabIndex="-1">
+								<input class="form-check-input" type="checkbox" name="people" hidden>People
+							</label>
+						</li>
+						<li class="form-check justify-content-start">
+							<label href="#" class="form-check-label" data-value="drug" tabIndex="-1">
+								<input class="form-check-input" type="checkbox" name="drug" hidden>Drugs
+							</label>
+						</li>
+						<li class="form-check justify-content-start">
+							<label href="#" class="form-check-label" data-value="disease" tabIndex="-1">
+								<input class="form-check-input" type="checkbox" name="disease" hidden>Diseases
+							</label>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</form>
 		<ul class="navbar-nav mt-2 mt-lg-0">
-			<li class="nav-item">
-				<a class="nav-link" href="#profile">
-					<div id="profile-block">
-						<img class="rounded-circle float-left"src="{% static doctor.get_profile_url %}" alt="Profile Icon">
-						{% sub doctor.name 16%}
-						<!-- TODO: add menu -->
-					</div>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
+					<img id="profile-img" class="rounded-circle"src="{% static doctor.get_profile_url %}" alt="Profile Icon"/>
+					{{ doctor.first_name}}
 				</a>
-			</li>
+				<div class="dropdown-menu px-2">
+		          <a class="dropdown-item rounded" href="#">Profile</a>
+		          <a class="dropdown-item rounded" href="#">Stats</a>
+		        </div>
+	      	</li>
 			<li class="nav-item">
 				<a href="{% url 'clinic:logout' %}" class="nav-link">Logout</a>
 			</li>
@@ -40,4 +83,11 @@
 			</li>
 		</ul>
 	</div>
+	{% else %}
+	<ul class="navbar-nav mt-2 mt-lg-0 justify-content-end">
+		<li class="nav-item">
+			<a class="nav-link" href="#help">Help</a>
+		</li>
+	</ul>
+	{% endif %}
 </nav>
