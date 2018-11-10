@@ -18,11 +18,7 @@
 					<h3 class="card-title text-dark m-0">Register <small class="text-muted">Patient</small></h3>
 				</div>
 				<div class="card-body">
-<<<<<<< HEAD
 					<form class="form" action="{% url 'clinic:add' 'patient' %}" method="post">
-=======
-					<form class="form" action="{% url 'clinic:add-p' %}" method="post">
->>>>>>> 5ab21846fc6691c11e626fe83a36c178362f9805
 						<table>
 							{% csrf_token %}
 							{% autoescape off %}

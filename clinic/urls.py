@@ -9,11 +9,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('logout/', views.logout, name='logout'),
 	path('add/<str:model>', views.add, name="add"),
-<<<<<<< HEAD
     path('view/<str:model>/<int:pk>', views.view, name='view'),
-=======
-    # path('add/<str:object>/', views.add_object, name='add'),
->>>>>>> 5ab21846fc6691c11e626fe83a36c178362f9805
     # path('test',test.a,name='test'),
     # # path('<str:object>/<str:pk>/', views.view_object, name='view'),
 ]
