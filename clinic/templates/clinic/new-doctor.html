@@ -1,15 +1,15 @@
 {% extends "clinic/base_extra.html" %}
 {% load view-helper %}
 {% block title %}Add Doctor| Clinic{% endblock %}
-{% block head %}
+{% block head %} 
 	<script type="text/javascript">
-	function limitLength(t, limit) {
-		if (t.value.length > limit)
-			t.value = t.value.slice(0, limit);
-	}
-</script>
-	{% endblock %}
-	{% block content %}
+		function limitLength(t, limit) {
+			if (t.value.length > limit)
+				t.value = t.value.slice(0, limit);
+		}
+	</script> 
+{% endblock %}
+{% block content %}
 	<div class="container py-4">
 		<div class="row">
 			<div class="col-12 col-lg-7 mx-auto">
@@ -32,10 +32,10 @@
 								<div class="form-row"> {% input object 'first_name' 'col-md-4' extra=extra %}
 									{% input object 'middle_name' 'col-md-4' extra=extra %}
 									{% input object 'last_name' 'col-md-4' extra=extra %}
-
+									
 									{% input object 'phone_number' 'col-md-5' 'tel' options='onkeypress="limitLength(this, 10)"' extra=extra %}
 									{% input object 'email' 'col-md-7' 'email' extra=extra %}
-
+									
 									{% input object 'qual' 'col-md-5' 'text' icon='work' i_opts='prefix' extra=extra options="maxlength='20' onkeyup='limitLength(this, 20)'" %}
 									{% select object 'speciality' 'col-md-7' icon='star' i_opts='prefix' extra=extra %} </div>
 							</fieldset>
@@ -44,13 +44,13 @@
 								<div class="form-row"> {% select object 'gender' 'col-md-3' extra=extra %}
 									{% select object 'blood_type' 'col-md-3' extra=extra %}
 									{% input object 'dob' 'col-md-6' 'date' extra=extra %}
-
+									
 									{% input address 's_address' 'col-sm-12 col-md-9' extra=extra %}
 									{% input address 'pincode' 'col-sm-3' 'tel' extra=extra %}
 									{% input address 'city' 'col-sm-5 col-md-3' extra=extra %}
 									{% select address 'state' 'col-sm-4' extra=extra %}
 									{% select address 'country' 'col-md-5' extra=extra %}
-
+									
 									{% textarea object 'bio' 250 'col-md-12' icon='info' i_opts='prefix' extra=extra %} </div>
 							</fieldset>
 							<input type="reset" name="reset" value="Clear" class="card-link btn btn-light">
@@ -63,4 +63,4 @@
 			</div>
 		</div>
 	</div>
-{% endblock %}
+{% endblock %} 

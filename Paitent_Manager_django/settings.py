@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'clinic.apps.ClinicConfig',
-	'nested_admin'
+	'nested_admin',
+	'django_superform'
 ]
 
 MIDDLEWARE = [
